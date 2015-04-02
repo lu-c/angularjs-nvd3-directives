@@ -33,12 +33,13 @@ module.exports = function (grunt) {
 			js: {
 				src: [
 					'src/**/intro.js',
-					'generated/directives/legendDirectives.js',
-					'src/**/nvD3LegendConfiguration.js',
-					'src/**/nvD3Events.js',
-					'src/**/nvD3AxisConfiguration.js',
-					'generated/directives/nvd3Directives.js',
-					'src/**/outro.js'
+                    'src/directives/legendDirectives.js',
+                    'src/**/nvD3LegendConfiguration.js',
+                    'src/**/nvD3Events.js',
+                    'src/**/nvD3AxisConfiguration.js',
+                    'src/directives/nvd3Directives.js',
+                    'src/models/multibarlinechart.js',
+                    'src/**/outro.js'
 				],
 				dest: 'dist/<%= pkg.name %>.js'
 			}
