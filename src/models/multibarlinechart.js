@@ -231,9 +231,7 @@ nv.models.multiBarLineChart = function() {
             barsWrap.transition().call(multibar);
 
             var watermark = availableHeight * (1-(data.line * 0.01)) + margin.top
-            _.each($(this).children('line'), function(line) {
-                $(line).remove();
-            })
+
             d3.select(this).append('line').attr({
                 x1: margin.left,
                 y1: watermark,
