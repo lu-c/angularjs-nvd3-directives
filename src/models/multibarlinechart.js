@@ -268,31 +268,24 @@ nv.models.multiBarLineChart = function() {
                 class: 'redrawElement'
             }).text("AVG").style("font-size", "15px")
 
-            //var containerBounds = that.getBoundingClientRect()
-            //
-            //_.each($(this).find('.nv-group'), function(group, i) {
-            //    _.each($(group).find('rect'), function(rect, j) {
-            //        console.log("rect", rect)
-            //        console.log("bbox", rect.getBBox())
-            //        console.log("bounding client rect", rect.getBoundingClientRect())
-            //
-            //        var barValue = Number(data.data[i].values[j][1].toFixed(1)),
-            //            rectBounds = rect.getBoundingClientRect(),
-            //            barCenterX = rectBounds.x - containerBounds.x
-            //        console.log("barValue", barValue)
-            //        console.log("barCenterX", barCenterX)
-            //
-            //
-            //        container.append('text').attr({
-            //            x: barCenterX + margin.left,
-            //            y: availableHeight - margin.top/2*(i+10),
-            //            fill: "red",
-            //            "text-anchor": "middle",
-            //            "dominant-baseline": "ideographic",
-            //            class: 'redrawElement'
-            //        }).text(barValue).style("font-size", "15px")
-            //    })
-            //})
+            var containerBounds = that.getBoundingClientRect()
+            _.each($(this).find('.nv-group'), function(group, i) {
+                _.each($(group).find('rect'), function(rect, j) {
+                    var barValue = Number(data.data[i].values[j][1].toFixed(1)),
+                        rectBounds = rect.getBoundingClientRect(),
+                        rectWidth = $(rect).attr("width"),
+                        barCenterX = rectBounds.x - containerBounds.x
+
+                    container.append('text').attr({
+                        x: barCenterX + rectWidth/2,
+                        y: availableHeight - margin.top/2,
+                        fill: "white",
+                        "text-anchor": "middle",
+                        "dominant-baseline": "ideographic",
+                        class: 'redrawElement'
+                    }).text(barValue).style("font-size", "15px")
+                })
+            })
 
             //------------------------------------------------------------
 
