@@ -1,4 +1,4 @@
-/*! angularjs-nvd3-directives - v0.0.8 - 2015-04-02
+/*! angularjs-nvd3-directives - v0.0.8 - 2015-04-03
 * http://angularjs-nvd3-directives.github.io/angularjs-nvd3-directives
 * Copyright (c) 2015 Christian Maurer; Licensed Apache License, v2.0 */
 (function() {
@@ -1517,6 +1517,7 @@ function initializeMargin(scope, attrs){
                     data: '=',
                     filtername: '=',
                     filtervalue: '=',
+                    labelLine: '@',
                     width: '@',
                     height: '@',
                     id: '@',
@@ -1620,6 +1621,7 @@ function initializeMargin(scope, attrs){
                                 generate: function(){
                                     initializeMargin(scope, attrs);
                                     var chart = nv.models.multiBarLineChart()
+                                        .labelLine(attrs.labelline)
                                         .width(scope.width)
                                         .height(scope.height)
                                         .margin(scope.margin)
@@ -3320,6 +3322,7 @@ nv.models.multiBarLineChart = function() {
     var margin = {top: 30, right: 20, bottom: 50, left: 60}
         , width = null
         , height = null
+        , labelLine = null
         , color = nv.utils.defaultColor()
         , showControls = true
         , showLegend = true
@@ -3388,6 +3391,11 @@ nv.models.multiBarLineChart = function() {
         selection.each(function(data) {
             var container = d3.select(this),
                 that = this;
+            $(this).prepend($('<defs>' +
+            '<linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">' +
+            '<stop offset="0%" style="stop-color:rgb(211,211,211);stop-opacity:1"/>' +
+            '<stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1"/>' +
+            '</linearGradient></defs>'))
 
             var availableWidth = (width  || parseInt(container.style('width')) || 960)
                     - margin.left - margin.right,
@@ -3447,7 +3455,7 @@ nv.models.multiBarLineChart = function() {
             // Setup containers and skeleton of chart
 
             var wrap = container.selectAll('g.nv-wrap.nv-multiBarWithLegend').data([data]);
-            var gEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-multiBarWithLegend').append('g');
+            var gEnter = wrap.enter().append('g').attr({'class': 'nvd3 nv-wrap nv-multiBarWithLegend'}).append('g');
             var g = wrap.select('g');
 
             gEnter.append('g').attr('class', 'nv-x nv-axis');
@@ -3535,15 +3543,62 @@ nv.models.multiBarLineChart = function() {
             barsWrap.transition().call(multibar);
 
             var watermark = availableHeight * (1-(data.line * 0.01)) + margin.top
-            _.each($(this).children('line'), function(line) {
+            _.each($(this).children('.redrawElement'), function(line) {
                 $(line).remove();
             })
-            d3.select(this).append('line').attr({
+            container.append('line').attr({
                 x1: margin.left,
                 y1: watermark,
                 x2: availableWidth+margin.left,
-                y2: watermark
+                y2: watermark,
+                fill: "rgb(150,150,150)",
+                class: 'redrawElement'
             }).style("stroke", '#000')
+
+            var labelx = (labelLine == "left") ? margin.left/2 : (availableWidth + margin.left + margin.right/2);
+            container.append('text').attr({
+                x: labelx,
+                y: watermark,
+                fill: "rgb(150,150,150)",
+                "text-anchor": "middle",
+                "dominant-baseline": "central",
+                class: 'redrawElement'
+            }).text(data.line).style("font-size", "15px")
+
+            container.append('text').attr({
+                x: labelx,
+                y: watermark+20,
+                fill: "rgb(150,150,150)",
+                "text-anchor": "middle",
+                "dominant-baseline": "central",
+                class: 'redrawElement'
+            }).text("AVG").style("font-size", "15px")
+
+            //var containerBounds = that.getBoundingClientRect()
+            //
+            //_.each($(this).find('.nv-group'), function(group, i) {
+            //    _.each($(group).find('rect'), function(rect, j) {
+            //        console.log("rect", rect)
+            //        console.log("bbox", rect.getBBox())
+            //        console.log("bounding client rect", rect.getBoundingClientRect())
+            //
+            //        var barValue = Number(data.data[i].values[j][1].toFixed(1)),
+            //            rectBounds = rect.getBoundingClientRect(),
+            //            barCenterX = rectBounds.x - containerBounds.x
+            //        console.log("barValue", barValue)
+            //        console.log("barCenterX", barCenterX)
+            //
+            //
+            //        container.append('text').attr({
+            //            x: barCenterX + margin.left,
+            //            y: availableHeight - margin.top/2*(i+10),
+            //            fill: "red",
+            //            "text-anchor": "middle",
+            //            "dominant-baseline": "ideographic",
+            //            class: 'redrawElement'
+            //        }).text(barValue).style("font-size", "15px")
+            //    })
+            //})
 
             //------------------------------------------------------------
 
@@ -3729,6 +3784,13 @@ nv.models.multiBarLineChart = function() {
         margin.right  = typeof _.right  != 'undefined' ? _.right  : margin.right;
         margin.bottom = typeof _.bottom != 'undefined' ? _.bottom : margin.bottom;
         margin.left   = typeof _.left   != 'undefined' ? _.left   : margin.left;
+        return chart;
+    };
+
+
+    chart.labelLine = function(_) {
+        if (!arguments.length) return labelLine;
+        labelLine = _;
         return chart;
     };
 

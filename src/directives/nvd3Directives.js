@@ -737,6 +737,7 @@
                     data: '=',
                     filtername: '=',
                     filtervalue: '=',
+                    labelLine: '@',
                     width: '@',
                     height: '@',
                     id: '@',
@@ -840,6 +841,7 @@
                                 generate: function(){
                                     initializeMargin(scope, attrs);
                                     var chart = nv.models.multiBarLineChart()
+                                        .labelLine(attrs.labelline)
                                         .width(scope.width)
                                         .height(scope.height)
                                         .margin(scope.margin)
