@@ -269,15 +269,19 @@ nv.models.multiBarLineChart = function() {
             }).text("AVG").style("font-size", "15px")
 
             var containerBounds = that.getBoundingClientRect()
+            var bars = []
+
             _.each($(this).find('.nv-group'), function(group, i) {
                 _.each($(group).find('rect'), function(rect, j) {
                     var barValue = Number(data.data[i].values[j][1].toFixed(1)),
                         rectBounds = rect.getBoundingClientRect(),
-                        rectWidth = $(rect).attr("width"),
-                        barCenterX = rectBounds.x - containerBounds.x
+                        barWidth = Number($(rect).attr("width")),
+                        barLeft = rectBounds.x - containerBounds.x
+
+                    bars.push({left: Number((barLeft).toFixed(1)), right: Number((barLeft + barWidth).toFixed(1))})
 
                     container.append('text').attr({
-                        x: barCenterX + rectWidth/2,
+                        x: barLeft + barWidth/2,
                         y: availableHeight - margin.top/2,
                         fill: "white",
                         "text-anchor": "middle",
@@ -285,6 +289,36 @@ nv.models.multiBarLineChart = function() {
                         class: 'redrawElement'
                     }).text(barValue).style("font-size", "15px")
                 })
+            })
+
+            bars = _.sortBy(bars, function(n) { return n.left; });
+            var series = [], currentSeries = {left: bars[0].left, right: bars[0].right}, lastBar = null;
+
+            for(var _i = 1; _i < bars.length; _i++) {
+                var bar = bars[_i]
+                if (currentSeries.right == bar.left) {
+                    currentSeries.right = bar.right;
+                }
+                else {
+                    series.push(currentSeries);
+                    currentSeries = {};
+                    currentSeries.left = bar.left;
+                    currentSeries.right = bar.right;
+                }
+            }
+            series.push(currentSeries);
+
+            _.each(series, function(s) {
+                container.insert('rect',":first-child").attr({
+                    x: s.left,
+                    y: margin.top,
+                    width: s.right - s.left,
+                    height: 100,
+                    fill: "url(#grad2)",
+                    "text-anchor": "middle",
+                    "dominant-baseline": "ideographic",
+                    class: 'redrawElement'
+                }).style("font-size", "15px")
             })
 
             //------------------------------------------------------------
