@@ -644,7 +644,7 @@
                     yaxisticksize: '&',
                     yaxistickpadding: '&',
                     yaxistickformat: '&',
-                    yaxislabel: '@',
+                    yaxislabel: '=',
                     yaxisscale: '&',
                     yaxisdomain: '&',
                     yaxisrange: '&',

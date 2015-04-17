@@ -169,7 +169,7 @@ function configureYaxis (chart, scope, attrs) {
 		chart.yAxis.tickFormat(scope.yaxistickformat());
 	}
 	if (attrs.yaxislabel) {
-		chart.yAxis.axisLabel(attrs.yaxislabel);
+		chart.yAxis.axisLabel(scope.yaxislabel);
 	}
 	if (attrs.yaxisscale) {
 		chart.yAxis.scale(scope.yaxisscale());

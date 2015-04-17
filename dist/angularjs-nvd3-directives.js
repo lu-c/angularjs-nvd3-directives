@@ -1,4 +1,4 @@
-/*! angularjs-nvd3-directives - v0.0.8 - 2015-04-03
+/*! angularjs-nvd3-directives - v0.0.8 - 2015-04-17
 * http://angularjs-nvd3-directives.github.io/angularjs-nvd3-directives
 * Copyright (c) 2015 Christian Maurer; Licensed Apache License, v2.0 */
 (function() {
@@ -605,7 +605,7 @@ function configureYaxis (chart, scope, attrs) {
 		chart.yAxis.tickFormat(scope.yaxistickformat());
 	}
 	if (attrs.yaxislabel) {
-		chart.yAxis.axisLabel(attrs.yaxislabel);
+		chart.yAxis.axisLabel(scope.yaxislabel);
 	}
 	if (attrs.yaxisscale) {
 		chart.yAxis.scale(scope.yaxisscale());
@@ -784,7 +784,7 @@ function configureY2axis (chart, scope, attrs) {
 	}
 }
 function initializeMargin(scope, attrs){
-        var margin = (scope.$eval(attrs.margin) || {left: 50, top: 50, bottom: 50, right: 50});
+        var margin = (scope.$eval(attrs.margin) || {left: 100, top: 50, bottom: 50, right: 50});
         if (typeof(margin) !== 'object') {
             // we were passed a vanilla int, convert to full margin object
             margin = {left: margin, top: margin, bottom: margin, right: margin};
@@ -1424,7 +1424,7 @@ function initializeMargin(scope, attrs){
                     yaxisticksize: '&',
                     yaxistickpadding: '&',
                     yaxistickformat: '&',
-                    yaxislabel: '@',
+                    yaxislabel: '=',
                     yaxisscale: '&',
                     yaxisdomain: '&',
                     yaxisrange: '&',
